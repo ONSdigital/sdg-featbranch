@@ -1,0 +1,107 @@
+version: "3"
+services: 
+    
+    repositoryclone:
+        build: ./containers/repositoryclone/.
+        volumes:
+            - ~/.featbranch/repositories:/root
+        environment: 
+            - owner=${owner}      
+            - siteRepo=${siteRepo}
+            - dataRepo=${dataRepo}            
+
+    githubapi:
+        build: ./containers/githubapi/.
+        volumes:
+            - ./containers/githubapi/content:/root
+        ports: 
+            - 5000:5000
+
+    outdatedbranches:
+        build: ./containers/outdatedbranches/.
+        volumes:
+            - ./containers/outdatedbranches/content:/root
+            - ~/.featbranch/output:/output
+        depends_on: 
+            - githubapi
+        environment: 
+            - owner=${owner}
+            - siteRepo=${siteRepo}
+            - dataRepo=${dataRepo}
+            - githubToken=${githubToken}
+
+    server:
+        build:
+            context: ./
+            dockerfile: ./containers/server/Dockerfile
+        volumes:
+            - ~/.featbranch/server:/usr/local/apache2/htdocs
+        ports: 
+            - 80:80
+
+    sitebuild:
+        build:
+            context: ./
+            dockerfile: ./containers/sitebuild/Dockerfile
+        volumes:
+            - ~/.featbranch/server:/server
+            - ~/.featbranch/repositories:/repositories
+            - ./containers/sitebuild/content:/root
+            - ~/.featbranch/output:/output
+        environment: 
+            - branch=${branch}
+
+    databuild:
+        build:
+            context: ./
+            dockerfile: ./containers/databuild/Dockerfile
+        volumes:
+            - ~/.featbranch/server:/server
+            - ~/.featbranch/repositories:/repositories
+            - ~/.featbranch/output:/output
+            - ./containers/databuild/content:/root
+        environment: 
+            - branch=${branch}
+
+    datapreviewbuild:
+        build:
+            context: ./
+            dockerfile: ./containers/datapreviewbuild/Dockerfile
+        volumes:
+            - ~/.featbranch/repositories:/repositories
+            - ~/.featbranch/server:/server
+            - ~/.featbranch/output:/output
+            - ./containers/datapreviewbuild/content:/root
+        environment: 
+            - dataBranch=${dataBranch}      
+            - serverUrl=${serverUrl}
+        depends_on: 
+            - server
+
+    a11yreport:
+        build: ./containers/a11yreport/.
+        volumes:
+            - ~/.featbranch/server:/server
+        environment: 
+            - branch=${branch}
+        depends_on: 
+            - server
+
+    deploymentapi:
+        build: ./containers/deploymentapi/.
+        volumes:
+            - ~/.featbranch/database:/database
+            - ./containers/deploymentapi/content:/root
+        ports:
+            - 5001:5000
+
+    slack:
+        build: ./containers/slack/.
+        environment: 
+            - message=${message}
+            - webHook=${webHook}
+
+    dbinspect:
+        build: ./containers/dbinspect/.
+        volumes:
+            - ~/.featbranch/database:/database

@@ -30,4 +30,7 @@ echo "Starting servers..."
 docker-compose up -d server
 docker-compose up -d githubapi
 docker-compose up -d deploymentapi
+
+chmod +x ./deploy.sh
+chmod +x ./deployLoop.sh
 echo "Installation complete."

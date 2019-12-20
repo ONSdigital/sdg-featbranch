@@ -38,9 +38,9 @@ buildSiteBranches(){
             then
                 curl -X POST -d "repository=$1&branch=$branchName&latestCommit=$branchLatestCommit" http://localhost:5001/add-entry
                 branch=$branchName docker-compose up a11yreport
-                message="$branchName built successfully" webHook="https://hooks.slack.com/services/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" docker-compose up slack
+                message="$branchName built successfully" webHook="$slackWebhook" docker-compose up slack
             else
-                message="$branchName failed to build" webHook="https://hooks.slack.com/services/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" docker-compose up slack
+                message="$branchName failed to build" webHook="$slackWebhook" docker-compose up slack
             fi
         fi
     done

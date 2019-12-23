@@ -1,4 +1,3 @@
-*🚨 Data updated*
-{repository} / {branch}
-Latest commit: {commitName} by {commitAuthor}
-Site link: {serverUrl}/datapreview_{branchName}
+*✅ Data updated*
+`{repository}` / `{branchName}`
+Preview site: {serverUrl}/datapreview_{branchName}

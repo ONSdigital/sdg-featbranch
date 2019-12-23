@@ -1,5 +1,4 @@
-*🚨 Site branch updated*
-{repository} / {branch}
-Latest commit: {commitName} by {commitAuthor}
+*✅ Site branch updated*
+`{repository}` / `{branchName}`
 Link: {serverUrl}/{branchName}
 Accessibility report: {serverUrl}/{branchName}/accessibility

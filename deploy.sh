@@ -6,8 +6,8 @@ deploy(){
     updateRepositories $siteRepo $dataRepo
     cd $projectRoot
     getAllBranches $owner $siteRepo $dataRepo $githubToken
-    buildSiteBranches $siteRepo
-    buildDataBranches $dataRepo
+    buildSiteBranches $siteRepo $serverUrl
+    buildDataBranches $dataRepo $serverUrl
 }
 
 updateRepositories(){
@@ -38,9 +38,13 @@ buildSiteBranches(){
             then
                 curl -X POST -d "repository=$1&branch=$branchName&latestCommit=$branchLatestCommit" http://localhost:5001/add-entry
                 branch=$branchName docker-compose up a11yreport
-                message="$branchName built successfully" webHook="$slackWebhook" docker-compose up slack
-            else
-                message="$branchName failed to build" webHook="$slackWebhook" docker-compose up slack
+
+                urlEscaped=$(echo $serverUrl | sed "s/\//\\\\\//g")
+                slackMessage="$(<./slack/templates/updatedsitebranch.tpl)"
+                slackMessage=$(echo "$slackMessage" | sed "s/{repository}/$1/g")
+                slackMessage=$(echo "$slackMessage" | sed "s/{serverUrl}/$urlEscaped/g")
+                slackMessage=$(echo "$slackMessage" | sed "s/{branchName}/$branchName/g")
+                message="$slackMessage" webHook="$slackWebhook" docker-compose up slack
             fi
         fi
     done
@@ -61,7 +65,13 @@ buildDataBranches(){
             then
                 curl -X POST -d "repository=$1&branch=$branchName&latestCommit=$branchLatestCommit" http://localhost:5001/add-entry
                 dataBranch=$branchName serverUrl=$serverUrl docker-compose up datapreviewbuild > ~/.featbranch/server/logs/datapreview_$branchName.txt
-                message="$branchName built successfully" webHook="$slackWebhook" docker-compose up slack
+                
+                urlEscaped=$(echo $serverUrl | sed "s/\//\\\\\//g")
+                slackMessage="$(<./slack/templates/updateddata.tpl)"
+                slackMessage=$(echo "$slackMessage" | sed "s/{repository}/$1/g")
+                slackMessage=$(echo "$slackMessage" | sed "s/{serverUrl}/$urlEscaped/g")
+                slackMessage=$(echo "$slackMessage" | sed "s/{branchName}/$branchName/g")
+                message="$slackMessage" webHook="$slackWebhook" docker-compose up slack
             fi
         fi
     done

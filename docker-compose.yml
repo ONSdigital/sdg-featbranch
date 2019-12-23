@@ -37,7 +37,7 @@ services:
         volumes:
             - ~/.featbranch/server:/usr/local/apache2/htdocs
         ports: 
-            - 80:80
+            - 8000:80
 
     sitebuild:
         build:

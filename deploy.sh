@@ -34,9 +34,11 @@ buildSiteBranches(){
         then
         
             branch=$branchName docker-compose up sitebuild > ~/.featbranch/server/logs/$1_$branchName.txt
+            curl -X POST -d "repository=$1&branch=$branchName&latestCommit=$branchLatestCommit" http://localhost:5001/add-entry
+            
             if [ $(<~/.featbranch/output/sitebuildSuccess.out) = "1" ];
             then
-                curl -X POST -d "repository=$1&branch=$branchName&latestCommit=$branchLatestCommit" http://localhost:5001/add-entry
+
                 branch=$branchName docker-compose up a11yreport
 
                 urlEscaped=$(echo $serverUrl | sed "s/\//\\\\\//g")
@@ -60,10 +62,10 @@ buildDataBranches(){
         then
         
             branch=$branchName docker-compose up databuild > ~/.featbranch/server/logs/$1_$branchName.txt
+            curl -X POST -d "repository=$1&branch=$branchName&latestCommit=$branchLatestCommit" http://localhost:5001/add-entry
 
             if [ $(<~/.featbranch/output/databuildSuccess.out) = "1" ];
             then
-                curl -X POST -d "repository=$1&branch=$branchName&latestCommit=$branchLatestCommit" http://localhost:5001/add-entry
                 dataBranch=$branchName serverUrl=$serverUrl docker-compose up datapreviewbuild > ~/.featbranch/server/logs/datapreview_$branchName.txt
                 
                 urlEscaped=$(echo $serverUrl | sed "s/\//\\\\\//g")

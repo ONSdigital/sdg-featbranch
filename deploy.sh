@@ -13,10 +13,10 @@ deploy(){
 updateRepositories(){
     cd ~/.featbranch/repositories
     cd $1
-    git pull
+    sudo git pull
     cd ..
     cd $2
-    git pull
+    sudo git pull
     cd ../..
 }
 

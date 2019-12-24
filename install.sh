@@ -23,15 +23,15 @@ echo slackWebhook=$slackWebhook >> ~/.featbranch/settings.conf
 
 cp ./database/deployment.db ~/.featbranch/database
 
-docker-compose down
-docker-compose build repositoryclone
+sudo docker-compose down
+sudo docker-compose build
 
 echo "Cloning repositories..."
-owner=$owner siteRepo=$siteRepo dataRepo=$dataRepo docker-compose up repositoryclone
+sudo owner=$owner siteRepo=$siteRepo dataRepo=$dataRepo docker-compose up repositoryclone
 echo "Starting servers..."
-docker-compose up -d server
-docker-compose up -d githubapi
-docker-compose up -d deploymentapi
+sudo docker-compose up -d server
+sudo docker-compose up -d githubapi
+sudo docker-compose up -d deploymentapi
 
 chmod +x ./deploy.sh
 chmod +x ./deployLoop.sh

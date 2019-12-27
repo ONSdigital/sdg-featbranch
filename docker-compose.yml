@@ -1,14 +1,13 @@
 version: "3"
-services: 
-    
-    repositoryclone:
-        build: ./containers/repositoryclone/.
+services:          
+
+    repo.clone:
+        build: ./containers/repo.clone/.
         volumes:
+            - ./containers/repo.clone/content:/api
             - ~/.featbranch/repositories:/root
-        environment: 
-            - owner=${owner}      
-            - siteRepo=${siteRepo}
-            - dataRepo=${dataRepo}            
+        ports:
+            - 8101:5000
 
     githubapi:
         build: ./containers/githubapi/.

@@ -27,7 +27,10 @@ sudo docker-compose down
 sudo docker-compose build
 
 echo "Cloning repositories..."
-sudo owner=$owner siteRepo=$siteRepo dataRepo=$dataRepo docker-compose up repositoryclone
+sudo docker-compose up -d repo.clone
+sleep 5
+curl -X POST http://localhost:8101/$owner/$siteRepo
+curl -X POST http://localhost:8101/$owner/$dataRepo
 echo "Starting servers..."
 sudo docker-compose up -d server
 sudo docker-compose up -d githubapi

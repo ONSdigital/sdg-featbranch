@@ -6,6 +6,8 @@ services:
         volumes:
             - ./containers/repo.clone/content:/api
             - ~/.featbranch/repositories:/root
+        ports:
+            - 8100:80
 
     githubapi:
         build: ./containers/githubapi/.
@@ -64,8 +66,6 @@ services:
         build: ./containers/deploy.iteration/.
         volumes:
             - ./containers/deploy.iteration/content:/root/deploy
-        ports: 
-            - 8002:80
         depends_on: 
             - githubapi
             - site.buildbranch
@@ -96,4 +96,4 @@ services:
         volumes:
             - ./containers/deploy.loop/content:/api
         ports:
-            - 8100:80
+            - 8101:80

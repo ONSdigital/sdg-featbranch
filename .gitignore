@@ -1,3 +1,9 @@
 .cache
 __pycache__
 .bundle
+.vscode
+.config
+.npm
+node_modules
+.ash_history
+.node_repl_history

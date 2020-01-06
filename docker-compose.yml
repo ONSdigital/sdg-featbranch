@@ -6,28 +6,13 @@ services:
         volumes:
             - ./containers/repo.clone/content:/api
             - ~/.featbranch/repositories:/root
-        ports:
-            - 8101:5000
 
     githubapi:
         build: ./containers/githubapi/.
         volumes:
             - ./containers/githubapi/content:/root
-        ports: 
-            - 5000:5000
-
-    outdatedbranches:
-        build: ./containers/outdatedbranches/.
-        volumes:
-            - ./containers/outdatedbranches/content:/root
-            - ~/.featbranch/output:/output
         depends_on: 
-            - githubapi
-        environment: 
-            - owner=${owner}
-            - siteRepo=${siteRepo}
-            - dataRepo=${dataRepo}
-            - githubToken=${githubToken}
+            - tracking.deployments
 
     server:
         build:
@@ -38,69 +23,77 @@ services:
         ports: 
             - 80:80
 
-    sitebuild:
-        build:
-            context: ./
-            dockerfile: ./containers/sitebuild/Dockerfile
+    site.buildbranch:
+        build: ./containers/site.buildbranch/.
         volumes:
             - ~/.featbranch/server:/server
             - ~/.featbranch/repositories:/repositories
-            - ./containers/sitebuild/content:/root
-            - ~/.featbranch/output:/output
-        environment: 
-            - branch=${branch}
+            - ./containers/site.buildbranch/content:/api
 
-    databuild:
-        build:
-            context: ./
-            dockerfile: ./containers/databuild/Dockerfile
+    data.buildbranch:
+        build: ./containers/data.buildbranch/.
         volumes:
             - ~/.featbranch/server:/server
             - ~/.featbranch/repositories:/repositories
-            - ~/.featbranch/output:/output
-            - ./containers/databuild/content:/root
-        environment: 
-            - branch=${branch}
+            - ./containers/data.buildbranch/content:/api
 
-    datapreviewbuild:
-        build:
-            context: ./
-            dockerfile: ./containers/datapreviewbuild/Dockerfile
+    data.buildpreview:
+        build: ./containers/data.buildpreview/.
         volumes:
-            - ~/.featbranch/repositories:/repositories
             - ~/.featbranch/server:/server
-            - ~/.featbranch/output:/output
-            - ./containers/datapreviewbuild/content:/root
-        environment: 
-            - dataBranch=${dataBranch}      
-            - serverUrl=${serverUrl}
+            - ~/.featbranch/repositories:/repositories
+            - ./containers/data.buildpreview/content:/api
         depends_on: 
             - server
 
-    a11yreport:
-        build: ./containers/a11yreport/.
-        volumes:
+    site.a11yreport:
+        build: ./containers/site.a11yreport/.
+        volumes: 
             - ~/.featbranch/server:/server
-        environment: 
-            - branch=${branch}
+            - ./containers/site.a11yreport/content:/api
         depends_on: 
             - server
 
-    deploymentapi:
-        build: ./containers/deploymentapi/.
+    tracking.deployments:
+        build: ./containers/tracking.deployments/.
         volumes:
             - ~/.featbranch/database:/database
-            - ./containers/deploymentapi/content:/root
-        ports:
-            - 5001:5000
+            - ./containers/tracking.deployments/content:/root
 
-    slack:
-        build: ./containers/slack/.
-        environment: 
-            - message=${message}
-            - webHook=${webHook}
+    deploy.iteration:
+        build: ./containers/deploy.iteration/.
+        volumes:
+            - ./containers/deploy.iteration/content:/root/deploy
+        ports: 
+            - 8002:80
+        depends_on: 
+            - githubapi
+            - site.buildbranch
+        env_file: 
+            - ~/.featbranch/settings.conf
 
     dbinspect:
         build: ./containers/dbinspect/.
         volumes:
             - ~/.featbranch/database:/database
+
+    slack:
+        build: ./containers/slack/.
+        volumes:
+            - ./containers/slack/content:/root
+            - ./slack/templates:/templates
+        env_file: 
+            - ~/.featbranch/settings.conf
+
+    repo.update:
+        build: ./containers/repo.update/.
+        volumes:
+            - ./containers/repo.update/content:/api
+            - ~/.featbranch/repositories:/root
+
+    deploy.loop:
+        build: ./containers/deploy.loop
+        volumes:
+            - ./containers/deploy.loop/content:/api
+        ports:
+            - 8100:80

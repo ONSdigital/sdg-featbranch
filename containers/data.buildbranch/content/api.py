@@ -11,6 +11,9 @@ def build_data_branch(branch_name):
     build_successful = os.path.exists("/tmp/data/_site")
 
     if build_successful:
+        if os.path.exists("/server/data/" + branch_name):
+            shutil.rmtree("/server/data/" + branch_name)
+            
         shutil.copytree("/tmp/data/_site", "/server/data/" + branch_name)
 
     shutil.rmtree("/tmp/data")

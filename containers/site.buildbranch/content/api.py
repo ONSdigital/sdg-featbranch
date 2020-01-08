@@ -15,6 +15,9 @@ def build_site_branch(branch_name):
     build_successful = os.path.exists("/tmp/site/_site")
 
     if build_successful:
+        if os.path.exists("/server/" + branch_name):
+            shutil.rmtree("/server/" + branch_name)
+
         shutil.copytree("/tmp/site/_site", "/server/" + branch_name)
         shutil.rmtree("/tmp/site")
         

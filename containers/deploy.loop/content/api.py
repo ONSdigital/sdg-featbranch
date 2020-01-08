@@ -7,5 +7,9 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def loop():
-    requests.post("http://deploy.iteration")
-    time.sleep(120)
+    while True:
+        print("Starting deployment loop...")
+        requests.post("http://deploy.iteration")
+        print("Deploy loop completed. Starting again in 2 minutes...")
+        time.sleep(120)
+    return "Completed"

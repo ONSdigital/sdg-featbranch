@@ -61,8 +61,6 @@ services:
         depends_on: 
             - githubapi
             - site.buildbranch
-        env_file: 
-            - ~/.featbranch/settings.conf
 
     dbinspect:
         build: ./containers/dbinspect/.
@@ -74,8 +72,6 @@ services:
         volumes:
             - ./containers/slack/content:/root
             - ./slack/templates:/templates
-        env_file: 
-            - ~/.featbranch/settings.conf
 
     repo.update:
         build: ./containers/repo.update/.
@@ -89,3 +85,9 @@ services:
             - ./containers/deploy.loop/content:/api
         ports:
             - 8101:80
+
+    app.settings:
+        build: ./containers/app.settings/.
+        volumes: 
+            - ~/.featbranch/settings:/settings
+            - ./containers/app.settings/content:/root/app

@@ -8,17 +8,24 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const port = 80
 
 app.post('/template/:template', (req, res) => {
-    var slackWebhook = process.env.slackWebhook
+    axios.get("http://app.settings/slackWebhook")
+        .then((response) => {
+            var slackWebhook = response.data
+            var templateFilePath = "/templates/" + req.params.template + ".tpl"
 
-    var templateFilePath = "/templates/" + req.params.template + ".tpl"
-
-    fs.readFile(templateFilePath, 'utf-8', (err,data) => {
-        var templateContent = data
-        Object.keys(req.body).forEach((key, index) => {
-            data = data.split("{"+key+"}").join(req.body[key])
+            fs.readFile(templateFilePath, 'utf-8', (err,data) => {
+                Object.keys(req.body).forEach((key, index) => {
+                    data = data.split("{"+key+"}").join(req.body[key])
+                })
+                
+                axios.post(slackWebhook, {"text":data})
+                .catch((err) => {
+                    console.log("Couldn't post message to Slack")
+                })
+            })
         })
-        axios.post(slackWebhook, {"text":data})
-    })
+
+    
 
     res.send(req.body)
 })

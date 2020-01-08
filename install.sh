@@ -6,6 +6,7 @@ mkdir ~/.featbranch/server
 mkdir ~/.featbranch/server/data
 mkdir ~/.featbranch/repositories
 mkdir ~/.featbranch/database
+mkdir ~/.featbranch/settings
 
 read -p "Repository owner: " owner
 read -p "Site repository: " siteRepo
@@ -14,16 +15,16 @@ read -p "Server URL: " serverUrl
 read -p "Github token: " githubToken
 read -p "Slack webhook: " slackWebhook
 
+echo $owner > ~/.featbranch/settings/owner
+echo $siteRepo >> ~/.featbranch/settings/siteRepo
+echo $dataRepo >> ~/.featbranch/settings/dataRepo
+echo $serverUrl >> ~/.featbranch/settings/serverUrl
+echo $githubToken >> ~/.featbranch/settings/githubToken
+echo $slackWebhook >> ~/.featbranch/settings/slackWebhook
+
 cd ~/.featbranch/repositories
 git clone https://github.com/$owner/$siteRepo.git site
 git clone https://github.com/$owner/$dataRepo.git data
-
-echo owner=$owner > ~/.featbranch/settings.conf
-echo siteRepo=$siteRepo >> ~/.featbranch/settings.conf
-echo dataRepo=$dataRepo >> ~/.featbranch/settings.conf
-echo serverUrl=$serverUrl >> ~/.featbranch/settings.conf
-echo githubToken=$githubToken >> ~/.featbranch/settings.conf
-echo slackWebhook=$slackWebhook >> ~/.featbranch/settings.conf
 
 cd $appPath
 

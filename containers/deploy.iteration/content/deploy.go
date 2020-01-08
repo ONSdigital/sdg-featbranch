@@ -5,8 +5,9 @@ import (
     "net/http"
     "io/ioutil"
     "encoding/json"
-    "os"
     "bytes"
+    "fmt"
+    "strings"
 )
 
 type Branches struct {
@@ -43,8 +44,8 @@ func updateRepositories(){
 }
 
 func buildSiteBranches() {
-    repository := os.Getenv("siteRepo")
-    serverUrl := os.Getenv("serverUrl")
+    repository := getSetting("siteRepo")
+    serverUrl := getSetting("serverUrl")
 
     branches := getOutdatedBranches("site")
 
@@ -59,9 +60,9 @@ func buildSiteBranches() {
 }
 
 func buildDataBranches() {
-    repository := os.Getenv("dataRepo")
+    repository := getSetting("dataRepo")
     branches := getOutdatedBranches("data")
-    serverUrl := os.Getenv("serverUrl")
+    serverUrl := getSetting("serverUrl")
 
     for _,eachBranch := range branches.Branches{
         buildResponse := buildBranch("data", eachBranch.Name)
@@ -74,9 +75,13 @@ func buildDataBranches() {
 }
 
 func getOutdatedBranches(repositoryType string) Branches{
-    repositoryOwner := os.Getenv("owner")
-    repository := os.Getenv(repositoryType+"Repo")
-    githubToken := os.Getenv("githubToken")
+    repositoryOwner := getSetting("owner")
+    repository := getSetting(repositoryType+"Repo")
+    githubToken := getSetting("githubToken")
+
+    fmt.Println(repositoryOwner)
+    fmt.Println(repository)
+    fmt.Println(githubToken)
 
     githubApiResponse, _ := http.Get("http://githubapi/outdatedBranches/"+repositoryOwner+"/"+repository+"?token="+githubToken)
     branchesRawData, _ := ioutil.ReadAll(githubApiResponse.Body)
@@ -85,6 +90,13 @@ func getOutdatedBranches(repositoryType string) Branches{
     json.Unmarshal(branchesDataAsBytes, &branches)
 
     return branches
+}
+
+func getSetting(settingName string) string{
+    response, _ := http.Get("http://app.settings/" + settingName)
+	body, _ := ioutil.ReadAll(response.Body)
+	response.Body.Close()
+	return strings.TrimSpace(string(body))
 }
 
 func buildBranch(repositoryType string, branchName string) BuildResponse {

@@ -28,7 +28,7 @@ def get_all_branches(owner, repository_name):
             break
 
     return {
-        "branches": repository_branches[0:5]
+        "branches": repository_branches
     }
 
 @app.route("/branch-details/<owner>/<repository_name>/<branch_name>")

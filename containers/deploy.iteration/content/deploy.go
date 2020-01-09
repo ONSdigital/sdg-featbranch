@@ -68,7 +68,7 @@ func buildDataBranches() {
         buildResponse := buildBranch("data", eachBranch.Name)
         addEntryToDeploymentDatabase(repository, eachBranch.Name, eachBranch.Commit.Sha)
         if buildResponse.BuiltSuccessfully {
-            generateDataPreviewSite(eachBranch.Name)
+            generateDataPreviewSite(eachBranch.Name, serverUrl)
             postMessageToSlack("updateddata", "repository="+repository+"&branchName="+eachBranch.Name+"&serverUrl="+serverUrl)
         }
     }
@@ -112,8 +112,8 @@ func generateAccessibilityReport(branchName string) {
     http.Get("http://site.a11yreport/" + branchName)
 }
 
-func generateDataPreviewSite(dataBranchName string){
-    http.Get("http://data.buildpreview/" + dataBranchName)
+func generateDataPreviewSite(dataBranchName string, serverUrl string){
+    http.Get("http://data.buildpreview/" + dataBranchName + "?serverUrl=" + serverUrl)
 }
 
 func postMessageToSlack(template string, content string){    

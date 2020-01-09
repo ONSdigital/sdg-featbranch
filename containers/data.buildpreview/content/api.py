@@ -26,6 +26,9 @@ def build_preview(data_branch_name):
     build_successful = os.path.exists("/tmp/site/_site")
 
     if build_successful:
+        if os.path.exists("/server/datapreview_%s" % data_branch_name):
+            shutil.rmtree("/server/datapreview_%s" % data_branch_name)
+            
         for each_directory, subdirectories, files in os.walk("/tmp/site/_site"):
             for each_file in files:
                 full_path = "%s/%s" % (each_directory, each_file)

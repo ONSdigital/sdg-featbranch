@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/<data_branch_name>')
 def build_preview(data_branch_name):
-    serverUrl = request.args.get("serverUrl", "http://localhost")
+    serverUrl = request.args.get("serverUrl", "")
     
     shutil.copytree("/repositories/site", "/tmp/site")
     

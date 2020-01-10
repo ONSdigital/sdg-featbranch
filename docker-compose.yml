@@ -107,3 +107,20 @@ services:
         build: ./containers/github.webhook.response/.
         volumes:
             - ./containers/github.webhook.response/app:/root/app
+
+    deployqueue:
+        image: rabbitmq:3.8.3-beta.2-alpine
+        hostname: deployqueue
+        ports:
+            - "5672:5672"
+        restart: always
+
+    deploy.queue.send:
+        build: ./containers/deploy.queue.send/.
+        volumes:
+            - ./containers/deploy.queue.send/src:/src
+
+    deploy.queue.respond:
+        build: ./containers/deploy.queue.respond/.
+        volumes:
+            - ./containers/deploy.queue.respond/src:/src

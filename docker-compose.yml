@@ -102,3 +102,8 @@ services:
         build: ./containers/github.webhook/.
         volumes:
             - ./containers/github.webhook/src:/src
+
+    github.webhook.response:
+        build: ./containers/github.webhook.response/.
+        volumes:
+            - ./containers/github.webhook.response/app:/root/app

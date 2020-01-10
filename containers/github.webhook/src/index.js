@@ -1,4 +1,5 @@
 var express = require('express')
+var axios = require("axios")
 var app = express()
 
 app.use(express.json())
@@ -10,7 +11,11 @@ app.post('/', function (req, res) {
         message: req.body.head_commit.message
     }
 
-    res.send("Done")
+    axios.post("http://github.webhook.response", changeDetails)
+        .then((response) => {
+            console.log(response.data)
+            res.send(response.data)
+        })
   })
 
   app.listen(80);

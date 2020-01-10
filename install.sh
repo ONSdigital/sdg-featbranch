@@ -12,14 +12,12 @@ read -p "Repository owner: " owner
 read -p "Site repository: " siteRepo
 read -p "Data repository: " dataRepo
 read -p "Server URL: " serverUrl
-read -p "Github token: " githubToken
 read -p "Slack webhook: " slackWebhook
 
 echo $owner > ~/.featbranch/settings/owner
 echo $siteRepo >> ~/.featbranch/settings/siteRepo
 echo $dataRepo >> ~/.featbranch/settings/dataRepo
 echo $serverUrl >> ~/.featbranch/settings/serverUrl
-echo $githubToken >> ~/.featbranch/settings/githubToken
 echo $slackWebhook >> ~/.featbranch/settings/slackWebhook
 
 cd ~/.featbranch/repositories

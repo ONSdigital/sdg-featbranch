@@ -1,13 +1,6 @@
 version: "3"
 services:          
 
-    githubapi:
-        build: ./containers/githubapi/.
-        volumes:
-            - ./containers/githubapi/content:/root
-        depends_on: 
-            - tracking.deployments
-
     server:
         build:
             context: ./
@@ -48,12 +41,6 @@ services:
         depends_on: 
             - server
 
-    tracking.deployments:
-        build: ./containers/tracking.deployments/.
-        volumes:
-            - ~/.featbranch/database:/database
-            - ./containers/tracking.deployments/content:/root
-
     deploy.execute:
         build: ./containers/deploy.execute/.
         volumes:
@@ -61,29 +48,11 @@ services:
         depends_on: 
             - site.buildbranch
 
-    dbinspect:
-        build: ./containers/dbinspect/.
-        volumes:
-            - ~/.featbranch/database:/database
-
     slack:
         build: ./containers/slack/.
         volumes:
             - ./containers/slack/content:/root
             - ./slack/templates:/templates
-
-    repo.update:
-        build: ./containers/repo.update/.
-        volumes:
-            - ./containers/repo.update/content:/api
-            - ~/.featbranch/repositories:/root
-
-    deploy.loop:
-        build: ./containers/deploy.loop
-        volumes:
-            - ./containers/deploy.loop/content:/api
-        ports:
-            - 8101:80
 
     app.settings:
         build: ./containers/app.settings/.

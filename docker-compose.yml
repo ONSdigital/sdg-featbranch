@@ -97,3 +97,8 @@ services:
         ports:
             - 80:80
         restart: always
+
+    github.webhook:
+        build: ./containers/github.webhook/.
+        volumes:
+            - ./containers/github.webhook/src:/src

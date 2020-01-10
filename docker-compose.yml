@@ -14,8 +14,8 @@ services:
             dockerfile: ./containers/server/Dockerfile
         volumes:
             - ~/.featbranch/server:/usr/local/apache2/htdocs
-        ports: 
-            - 80:80
+        depends_on: 
+            - app.reverseproxy
 
     site.buildbranch:
         build: ./containers/site.buildbranch/.
@@ -91,3 +91,9 @@ services:
         volumes: 
             - ~/.featbranch/settings:/settings
             - ./containers/app.settings/content:/root/app
+
+    app.reverseproxy:
+        build: ./containers/app.reverseproxy/.
+        ports:
+            - 80:80
+        restart: always

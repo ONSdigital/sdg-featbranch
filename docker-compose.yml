@@ -54,12 +54,11 @@ services:
             - ~/.featbranch/database:/database
             - ./containers/tracking.deployments/content:/root
 
-    deploy.iteration:
-        build: ./containers/deploy.iteration/.
+    deploy.execute:
+        build: ./containers/deploy.execute/.
         volumes:
-            - ./containers/deploy.iteration/content:/root/deploy
+            - ./containers/deploy.execute/src:/root/deploy
         depends_on: 
-            - githubapi
             - site.buildbranch
 
     dbinspect:

@@ -13,7 +13,6 @@ app.post('/', function (req, res) {
 
     axios.post("http://github.webhook.response", changeDetails)
         .then((response) => {
-            console.log(response.data)
             res.send(response.data)
         })
   })

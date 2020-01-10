@@ -3,10 +3,10 @@ package main
 import(
 	"fmt"
 	"log"
-	"net/http"
+	"bytes"
 	"io/ioutil"
+	"net/http"
 	"encoding/json"
-	"time"
 )
 
 type ChangeDetails struct{
@@ -25,7 +25,15 @@ func respond(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 		case http.MethodPost:
 			changeDetails := getChangeDetails(r)
-			fmt.Fprintf(w, changeDetails.RepositoryName)
+			detailsAsPayload := changeDetails.RepositoryName+"||"+changeDetails.BranchName+"||"+changeDetails.Author+"||"+changeDetails.Message
+
+			var requestPayload = []byte(`{"message":"`+detailsAsPayload+`"}`)
+			req, _ := http.NewRequest("POST", "http://deploy.queue.send", bytes.NewBuffer(requestPayload))
+			req.Header.Set("Content-Type", "application/json")
+
+			client := &http.Client{}
+			resp, _ := client.Do(req)
+			defer resp.Body.Close()
 			
 		default:
 			fmt.Fprintf(w, "Invalid")

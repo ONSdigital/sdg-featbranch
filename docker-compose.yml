@@ -92,3 +92,10 @@ services:
         build: ./containers/deploy.queue.respond/.
         volumes:
             - ./containers/deploy.queue.respond/src:/src
+        restart: always
+
+    repo.update:
+        build: ./containers/repo.update/.
+        volumes:
+            - ./containers/repo.update/content:/api
+            - ~/.featbranch/repositories:/root

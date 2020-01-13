@@ -1,5 +1,6 @@
 import pika
 import os
+import requests
 
 HOST = "deployqueue"
 QUEUE_NAME = "deploy"
@@ -18,9 +19,19 @@ def get_channel():
 
 def receive_message(ch, method, properties, body):
         message = body.decode("utf-8")
-        display_message(message)
+        respond_to_message(message)
 
-def display_message(message):
-    print("Message: " + message)
+def respond_to_message(message):
+    split_message = message.split("||")
+    repository_name = split_message[0]
+    branch_name = split_message[1]
+    # author = split_message[2]
+    # message = split_message[3]
+
+    headers = {
+        'Content-Type': 'application/json',
+    }
+    data = '{"repositoryName":"'+repository_name+'", "branchName":"'+branch_name+'"}'
+    response = requests.post("http://deploy.execute", headers=headers, data=data)
 
 wait_for_messages()

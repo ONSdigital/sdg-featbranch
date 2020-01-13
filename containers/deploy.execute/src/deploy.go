@@ -43,6 +43,7 @@ func deploy(repositoryName string, branchName string) {
 }
 
 func deploySiteBranch(repositoryName string, branchName string, serverUrl string){
+	http.PostForm("http://repo.update/site", nil)
 	response := buildBranch("site", branchName)
 
 	if response.BuiltSuccessfully {
@@ -52,6 +53,7 @@ func deploySiteBranch(repositoryName string, branchName string, serverUrl string
 }
 
 func deployDataBranch(repositoryName string, branchName string, serverUrl string){
+	http.PostForm("http://repo.update/data",nil)
 	response := buildBranch("data", branchName)
 	if response.BuiltSuccessfully {
 		generateDataPreviewSite(branchName, serverUrl)

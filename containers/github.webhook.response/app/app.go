@@ -26,13 +26,14 @@ func respond(w http.ResponseWriter, r *http.Request) {
 		case http.MethodPost:
 			changeDetails := getChangeDetails(r)
 			detailsAsPayload := changeDetails.RepositoryName+"||"+changeDetails.BranchName+"||"+changeDetails.Author+"||"+changeDetails.Message
-
 			var requestPayload = []byte(`{"message":"`+detailsAsPayload+`"}`)
-			req, _ := http.NewRequest("POST", "http://deploy.queue.send", bytes.NewBuffer(requestPayload))
+			req, _ := http.NewRequest("POST", "http://deploy.queue.send/", bytes.NewBuffer(requestPayload))
+
 			req.Header.Set("Content-Type", "application/json")
 
 			client := &http.Client{}
 			resp, _ := client.Do(req)
+
 			defer resp.Body.Close()
 			
 		default:

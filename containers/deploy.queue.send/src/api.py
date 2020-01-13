@@ -9,7 +9,7 @@ def hello():
     message = request_items["message"]
     send_service = SendService()
     send_service.send_message(message)
-    return "Hello World!"
+    return message
 
-if __name__ == '__main__':
-    app.run()
+# if __name__ == '__main__':
+#     app.run()

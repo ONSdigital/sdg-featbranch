@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+    playground:
+        image: alpine:3.10.3
+    playground.python:
+        image: python:3.9.0a1-alpine3.10

@@ -76,6 +76,11 @@ services:
         volumes:
             - ./containers/github.webhook.response/app:/root/app
 
+    github.webhook.authorisation:
+        build: ./containers/github.webhook.authorisation/.
+        volumes:
+            - ./containers/github.webhook.authorisation/src:/src
+
     deployqueue:
         image: rabbitmq:3.8.3-beta.2-alpine
         hostname: deployqueue

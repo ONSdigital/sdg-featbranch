@@ -42,8 +42,8 @@ function getChangeDetailsFromRequest(request){
     var changeDetails = {
         repositoryName: request.body.repository.name,
         branchName: request.body.ref.split("/")[2],
-        author: request.body.head_commit.author.name,
-        message: request.body.head_commit.message
+        author: request.body.sender.login,
+        message: "Updates"
     }
     return changeDetails
 }

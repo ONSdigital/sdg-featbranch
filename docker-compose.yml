@@ -110,3 +110,9 @@ services:
         volumes:
             - ~/.featbranch/server:/server
             - ./containers/site.delete/content:/api
+
+    data.delete:
+        build: ./containers/data.delete/.
+        volumes:
+            - ~/.featbranch/server:/server
+            - ./containers/data.delete/content:/api

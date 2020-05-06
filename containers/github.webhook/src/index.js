@@ -4,13 +4,17 @@ var app = express()
 
 app.use(express.json())
 app.post('/', function (req, res) {
+    var changeDetails = getChangeDetailsFromRequest(req);
     authoriseRequest(req.body, req.headers['x-hub-signature'])
     .then(response => {
         if(response.signaturesMatch == true){
-            sendToResponseService(getChangeDetailsFromRequest(req))
+            sendToResponseService(changeDetails)
             .then(() => {
                 res.send("Received")
             })
+        }
+        else {
+            console.log("Signatures don't match")
         }
     })
 
@@ -43,7 +47,8 @@ function getChangeDetailsFromRequest(request){
         repositoryName: request.body.repository.name,
         branchName: request.body.ref.split("/")[2],
         author: request.body.sender.login,
-        message: "Updates"
+        message: "Updates",
+        deleted: request.body.deleted
     }
     return changeDetails
 }

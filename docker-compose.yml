@@ -104,3 +104,9 @@ services:
         volumes:
             - ./containers/repo.update/content:/api
             - ~/.featbranch/repositories:/root
+
+    site.delete:
+        build: ./containers/site.delete/.
+        volumes:
+            - ~/.featbranch/server:/server
+            - ./containers/site.delete/content:/api

@@ -7,11 +7,13 @@ import (
 	"log"
 	"strings"
 	"bytes"
+	"fmt"
 )
 
 type Deployment struct{
 	RepositoryName string
 	BranchName string
+	Deleted string
 }
 
 type BuildResponse struct {
@@ -27,19 +29,29 @@ func handle(w http.ResponseWriter, r *http.Request){
 	body, _ := ioutil.ReadAll(r.Body)
 	var deployment Deployment
 	json.Unmarshal([]byte(body), &deployment)
-	deploy(deployment.RepositoryName, deployment.BranchName)
+
+	deploy(deployment)
 }
 
-func deploy(repositoryName string, branchName string) {
+func deploy(deployment Deployment) {
 	siteRepository := getSetting("siteRepo")
 	dataRepository := getSetting("dataRepo")
 	serverUrl := getSetting("serverUrl")
+	branchHasBeenDeleted := deployment.Deleted == "true"
 
-	if repositoryName == siteRepository{
-		deploySiteBranch(siteRepository, branchName, serverUrl)
-	}else if repositoryName == dataRepository{
-		deployDataBranch(dataRepository, branchName, serverUrl)
+	if deployment.RepositoryName == siteRepository{
+		if branchHasBeenDeleted{
+			deleteSiteBranchFromServer(deployment.BranchName)
+		} else {
+			deploySiteBranch(siteRepository, deployment.BranchName, serverUrl)
+		}
+	}else if deployment.RepositoryName == dataRepository{
+		deployDataBranch(dataRepository, deployment.BranchName, serverUrl)
 	}
+}
+
+func deleteSiteBranchFromServer(branchName string){
+	http.PostForm("http://site.delete/" + branchName, nil)
 }
 
 func deploySiteBranch(repositoryName string, branchName string, serverUrl string){

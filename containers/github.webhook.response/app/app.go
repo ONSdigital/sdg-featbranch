@@ -7,6 +7,7 @@ import(
 	"io/ioutil"
 	"net/http"
 	"encoding/json"
+	"strconv"
 )
 
 type ChangeDetails struct{
@@ -14,6 +15,7 @@ type ChangeDetails struct{
 	BranchName string
 	Author string
 	Message string
+	Deleted bool
 }
 
 func main() {
@@ -25,7 +27,9 @@ func respond(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 		case http.MethodPost:
 			changeDetails := getChangeDetails(r)
-			detailsAsPayload := changeDetails.RepositoryName+"||"+changeDetails.BranchName+"||"+changeDetails.Author+"||"+changeDetails.Message
+
+			detailsAsPayload := changeDetails.RepositoryName+"||"+changeDetails.BranchName+"||"+changeDetails.Author+"||"+changeDetails.Message+"||"+strconv.FormatBool(changeDetails.Deleted)
+
 			var requestPayload = []byte(`{"message":"`+detailsAsPayload+`"}`)
 			req, _ := http.NewRequest("POST", "http://deploy.queue.send/", bytes.NewBuffer(requestPayload))
 

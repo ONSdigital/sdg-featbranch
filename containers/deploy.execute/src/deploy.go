@@ -7,7 +7,6 @@ import (
 	"log"
 	"strings"
 	"bytes"
-	"fmt"
 )
 
 type Deployment struct{

@@ -26,8 +26,6 @@ git clone https://github.com/$owner/$dataRepo.git data
 
 cd $appPath
 
-cp ./database/deployment.db ~/.featbranch/database
-
 chmod +x loop.sh
 sudo docker-compose down
 sudo docker-compose build
